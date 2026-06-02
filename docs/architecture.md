@@ -1,14 +1,14 @@
 # Architecture
 
-Multi-Agent Task Runtime is designed as a lightweight runtime and observability framework for multi-agent systems.
+Multi-Agent Task Runtime is an observability-first runtime for multi-agent systems.
 
-The core idea is simple:
+The central rule is:
 
 ```text
-Agents should not be black boxes.
+Everything that happens in the system generates an event.
 ```
 
-The runtime records what agents do while they execute tasks, interact with memory, call tools, retry failures, and evolve confidence over time.
+The project does not try to be another agent framework. It provides the runtime layer needed to understand agent execution.
 
 ## Goals
 
@@ -22,117 +22,134 @@ The runtime records what agents do while they execute tasks, interact with memor
 
 ## Non-Goals
 
-This project is not intended to become:
+This project is not currently intended to provide:
 
-- a distributed task queue
-- a model serving platform
-- a replacement for agent frameworks
-- a workflow orchestrator like Airflow or Temporal
-- an observability backend like Datadog or Grafana
+- LLM provider integrations
+- Streamlit or dashboard UI
+- distributed task execution
+- model serving
+- long-term vector memory
+- workflow orchestration
 
-It should remain understandable, modular, and easy to extend.
+Those can be added later after the runtime event model is stable.
 
-## Planned Components
+## Core Components
+
+### Event Model
+
+`events/event.py` defines the core `Event` dataclass:
+
+- `event_type`
+- `timestamp`
+- `agent_id`
+- `payload`
+
+`events/event_types.py` defines canonical event names such as `AGENT_STARTED`, `MEMORY_READ`, `TOOL_CALLED`, and `DRIFT_DETECTED`.
+
+### Event Bus
+
+`runtime/event_bus.py` implements synchronous publish/subscribe event routing.
+
+The event bus supports:
+
+- `subscribe()`
+- `unsubscribe()`
+- `publish()`
+
+Multiple subscribers can consume the same event stream.
+
+### Event Logger
+
+`runtime/event_logger.py` subscribes to the event bus and writes every event to JSONL:
+
+```text
+logs/runtime_events.jsonl
+```
+
+This gives the runtime a durable trace without requiring an observability backend.
+
+### Memory Store
+
+`memory/memory_store.py` implements an observable key-value memory store.
+
+Every operation emits an event:
+
+- `write()` -> `MEMORY_WRITE`
+- `read()` -> `MEMORY_READ`
+
+### Tool Executor
+
+`tools/tool_executor.py` registers and executes Python callables.
+
+Every tool run emits:
+
+- `TOOL_CALLED`
+- `TOOL_RETURNED`
+
+Returned events include execution duration.
+
+### Base Agent
+
+`agents/base_agent.py` provides a minimal observable lifecycle:
+
+- `start()` -> `AGENT_STARTED`
+- `run()` -> subclass behavior
+- `finish()` -> `AGENT_FINISHED`
 
 ### Runtime Coordinator
 
-Coordinates task execution and emits lifecycle events such as:
+`runtime/coordinator.py` executes agents sequentially and maintains execution context.
 
-- task_started
-- task_completed
-- task_failed
-- agent_started
-- agent_completed
-- retry_scheduled
+It emits lifecycle events around agent execution so coordinated runs are observable.
 
 ### Agent Registry
 
-Tracks agents participating in a run, including:
+`runtime/registry.py` tracks agents by ID and supports:
 
-- agent identity
-- role
-- capabilities
-- current status
-- assigned tasks
+- register agent
+- remove agent
+- discover agent
 
-### Event Stream
+### Confidence Tracker
 
-A structured append-only stream of runtime events.
+`analytics/confidence_tracker.py` records confidence history per agent and emits `CONFIDENCE_UPDATED`.
 
-Event categories may include:
+### Failure Analyzer
 
-- task events
-- agent events
-- memory events
-- tool events
-- confidence events
-- failure events
-- drift events
+`analytics/failure_analyzer.py` captures:
 
-### Memory Tracing
+- exception type
+- message
+- failure reason
+- stack trace
 
-Records memory operations:
+It emits `FAILURE_OCCURRED`.
 
-- memory_read
-- memory_write
-- memory_update
-- memory_miss
-- memory_conflict
+### Retry Manager
 
-### Tool Tracing
+`runtime/retry_manager.py` provides configurable retries and optional exponential backoff.
 
-Records tool activity:
+It emits:
 
-- tool_called
-- tool_succeeded
-- tool_failed
-- tool_retried
-- tool_latency_recorded
+- `RETRY_STARTED`
+- `RETRY_COMPLETED`
 
-### Confidence Tracking
+### Drift Detector
 
-Captures confidence changes during execution:
+`analytics/drift_detector.py` detects early behavioral drift signals:
 
-- initial confidence
-- confidence after planning
-- confidence after tool use
-- confidence after validation
-- confidence at final output
+- confidence decay
+- repeated failures
+- changing plans
+- inconsistent memory access
 
-### Failure Analysis
+It emits `DRIFT_DETECTED`.
 
-Captures failure context:
+### Timeline Renderer
 
-- failed component
-- error type
-- retry count
-- recovery action
-- final status
+`visualization/timeline_renderer.py` converts the event stream into a chronological human-readable timeline.
 
-### Drift Detection
-
-Compares agent behavior across runs to detect changes in:
-
-- tool usage patterns
-- memory access patterns
-- confidence calibration
-- retry frequency
-- output style
-- task completion quality
-
-### Runtime Dashboard
-
-A planned UI layer for exploring:
-
-- run timeline
-- agent activity
-- memory operations
-- tool calls
-- confidence graph
-- failure/retry traces
-- drift indicators
-
-## High-Level Flow
+## Event Flow
 
 ```text
 User Request
@@ -153,25 +170,48 @@ Memory Layer       Tool Layer
           v
     Event Stream
           |
+          +--> JSONL Event Logger
+          |
+          +--> Timeline Renderer
+          |
           v
-Observability Dashboard
+Observability Dashboard (future)
 ```
 
-## Design Principle
+## Demo Flow
 
-The runtime should make agent behavior visible without making the implementation heavy.
+`examples/multi_agent_demo.py` wires together:
+
+- `PlannerAgent`
+- `ResearchAgent`
+- `WriterAgent`
+- memory reads/writes
+- tool calls
+- confidence updates
+- failure capture
+- retry events
+- timeline rendering
+- JSONL logging
+
+Run:
+
+```bash
+python examples/multi_agent_demo.py
+```
+
+## Design Principles
 
 Prefer:
 
-- small interfaces
-- structured events
-- clear examples
-- minimal dependencies
+- explicit events
+- small modules
+- simple interfaces
 - observable execution
+- standard library first
 
 Avoid:
 
-- premature distributed systems complexity
 - hidden magic
-- framework lock-in
-- overly abstract architecture
+- premature framework abstractions
+- dashboard work before event semantics are stable
+- LLM integrations before runtime behavior is testable
