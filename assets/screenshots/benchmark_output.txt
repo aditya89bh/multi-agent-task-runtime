@@ -1,0 +1,16 @@
+{
+  "agent_count": 10,
+  "duration_seconds": 0.014912916987668723,
+  "events_per_agent": 100,
+  "events_per_second": 269564.96863250027,
+  "summary": {
+    "failures": 0,
+    "memory_reads": 1000,
+    "memory_writes": 1000,
+    "retries": 0,
+    "tool_calls": 1000,
+    "total_events": 4020
+  },
+  "total_events": 4020
+}
+Benchmark results written to benchmarks/results/latest_results.json

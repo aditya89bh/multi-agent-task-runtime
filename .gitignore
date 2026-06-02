@@ -87,3 +87,7 @@ logs/
 # Benchmark outputs
 benchmarks/results/
 confidence_report.json
+
+# Generated reports
+reports/latest_report.html
+reports/runtime_diagram.mmd

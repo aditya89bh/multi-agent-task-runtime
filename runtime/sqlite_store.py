@@ -26,14 +26,15 @@ class SQLiteEventStore:
         with self._connect() as conn:
             conn.execute(
                 """
-                INSERT INTO events (event_type, timestamp, agent_id, payload)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO events (event_type, timestamp, agent_id, payload, schema_version)
+                VALUES (?, ?, ?, ?, ?)
                 """,
                 (
                     event.event_type,
                     event.timestamp,
                     event.agent_id,
                     json.dumps(event.payload, sort_keys=True),
+                    event.schema_version,
                 ),
             )
 
@@ -71,7 +72,7 @@ class SQLiteEventStore:
         where = f" WHERE {' AND '.join(clauses)}" if clauses else ""
         with self._connect() as conn:
             rows = conn.execute(
-                f"SELECT event_type, timestamp, agent_id, payload FROM events{where} ORDER BY id ASC",
+                f"SELECT event_type, timestamp, agent_id, payload, schema_version FROM events{where} ORDER BY id ASC",
                 params,
             ).fetchall()
         return [self._row_to_event(row) for row in rows]
@@ -85,10 +86,14 @@ class SQLiteEventStore:
                     event_type TEXT NOT NULL,
                     timestamp TEXT NOT NULL,
                     agent_id TEXT,
-                    payload TEXT NOT NULL
+                    payload TEXT NOT NULL,
+                    schema_version TEXT NOT NULL DEFAULT '1.0'
                 )
                 """
             )
+            columns = {row[1] for row in conn.execute("PRAGMA table_info(events)").fetchall()}
+            if "schema_version" not in columns:
+                conn.execute("ALTER TABLE events ADD COLUMN schema_version TEXT NOT NULL DEFAULT '1.0'")
 
     def _connect(self) -> sqlite3.Connection:
         conn = sqlite3.connect(self.db_path)
@@ -102,4 +107,5 @@ class SQLiteEventStore:
             timestamp=row["timestamp"],
             agent_id=row["agent_id"],
             payload=json.loads(row["payload"]),
+            schema_version=row["schema_version"],
         )

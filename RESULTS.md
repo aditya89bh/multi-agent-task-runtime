@@ -108,3 +108,15 @@ The framework now includes collectors for:
 ## Replay and Storage
 
 Events can be persisted to SQLite, queried by event type, agent, or time range, and replayed into chronological timelines.
+
+## Visual Assets
+
+Generated examples are available in `assets/screenshots/`:
+
+```text
+assets/screenshots/live_dashboard.txt
+assets/screenshots/replay_timeline.txt
+assets/screenshots/benchmark_output.txt
+assets/screenshots/latest_report.html
+assets/screenshots/runtime_diagram.mmd
+```

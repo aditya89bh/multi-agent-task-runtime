@@ -18,6 +18,7 @@ def test_sqlite_event_store_creates_database_and_persists_all_event_fields(tmp_p
 
     assert db_path.exists()
     assert retrieved == [event]
+    assert retrieved[0].schema_version == "1.0"
 
 
 def test_sqlite_event_store_persists_multiple_events_in_order(tmp_path):

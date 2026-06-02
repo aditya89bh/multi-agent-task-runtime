@@ -1,0 +1,16 @@
+╭─────────────────────────── Runtime Observability ────────────────────────────╮
+│ Multi-Agent Task Runtime Dashboard                                           │
+│ ==================================                                           │
+│ Active agents: planner, researcher, writer                                   │
+│ Total events: 42                                                             │
+│ Memory activity: reads=4 writes=6                                            │
+│ Tool activity: calls=4 tools=search_notes, summarize, search_notes,          │
+│ summarize                                                                    │
+│ Failures: 2                                                                  │
+│ Retries: 2                                                                   │
+│ Confidence:                                                                  │
+│   - planner: 0.82                                                            │
+│   - researcher: 0.74                                                         │
+│   - writer: 0.66                                                             │
+│ Most accessed memory keys: [('plan', 4), ('research', 4), ('draft', 2)]      │
+╰──────────────────────────────────────────────────────────────────────────────╯

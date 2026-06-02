@@ -1,0 +1,25 @@
+Runtime Timeline
+================
+2026-06-02T08:28:21.925436+00:00 | planner | agent_started | context={'topic': 'multi-agent observability'}
+2026-06-02T08:28:21.925558+00:00 | planner | memory_write | key='plan', value='Research topic, draft summary, validate output'
+2026-06-02T08:28:21.925625+00:00 | planner | confidence_updated | confidence=0.82, reason='plan created'
+2026-06-02T08:28:21.925688+00:00 | planner | agent_finished | result={'plan': 'Research topic, draft summary, validate output'}
+2026-06-02T08:28:21.925746+00:00 | researcher | agent_started | context={'topic': 'multi-agent observability'}
+2026-06-02T08:28:21.925801+00:00 | researcher | memory_read | found=True, key='plan', value='Research topic, draft summary, validate output'
+2026-06-02T08:28:21.925858+00:00 | researcher | tool_called | args=['multi-agent observability'], kwargs={}, tool_name='search_notes'
+2026-06-02T08:28:21.925931+00:00 | researcher | tool_returned | duration_ms=0.0010459916666150093, result='Key findings about multi-agent observability: observability beats guessing.', tool_name='search_notes'
+2026-06-02T08:28:21.925993+00:00 | researcher | memory_write | key='research', value='Key findings about multi-agent observability: observability beats guessing.'
+2026-06-02T08:28:21.926047+00:00 | researcher | confidence_updated | confidence=0.74, reason='research gathered'
+2026-06-02T08:28:21.926170+00:00 | researcher | agent_finished | result={'plan_seen': 'Research topic, draft summary, validate output', 'research': 'Key findings about multi-agent observability: observability beats guessing.'}
+2026-06-02T08:28:21.926230+00:00 | writer | agent_started | context={'topic': 'multi-agent observability'}
+2026-06-02T08:28:21.926287+00:00 | writer | memory_read | found=True, key='research', value='Key findings about multi-agent observability: observability beats guessing.'
+2026-06-02T08:28:21.926458+00:00 | writer | failure_occurred | exception_type='RuntimeError', message='temporary writer formatting failure', reason='draft generation', stack_trace='Traceback (most recent call last):\n  File "/home/owlnuc12/.openclaw/workspace/multi-agent-task-runtime/examples/multi_agent_demo.py", line 69, in flaky_write\n    raise RuntimeError("temporary writer formatting failure")\nRuntimeError: temporary writer formatting failure\n'
+2026-06-02T08:28:21.926538+00:00 | writer | retry_started | attempt=1, error='temporary writer formatting failure', operation_name='write_draft'
+2026-06-02T08:28:21.926597+00:00 | writer | retry_completed | attempt=1, operation_name='write_draft'
+2026-06-02T08:28:21.926651+00:00 | writer | tool_called | args=['Key findings about multi-agent observability: observability beats guessing.'], kwargs={}, tool_name='summarize'
+2026-06-02T08:28:21.926708+00:00 | writer | tool_returned | duration_ms=0.0010350195225328207, result='Summary: Key findings about multi-agent observability: observability beats guessing.', tool_name='summarize'
+2026-06-02T08:28:21.926763+00:00 | writer | memory_write | key='draft', value='Summary: Key findings about multi-agent observability: observability beats guessing.'
+2026-06-02T08:28:21.926814+00:00 | writer | confidence_updated | confidence=0.66, reason='recovered after retry'
+2026-06-02T08:28:21.926865+00:00 | writer | agent_finished | result={'draft': 'Summary: Key findings about multi-agent observability: observability beats guessing.'}
+
+Event log written to logs/runtime_events.jsonl

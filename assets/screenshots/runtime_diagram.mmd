@@ -1,0 +1,17 @@
+sequenceDiagram
+    planner->>Memory: write plan
+    researcher->>Memory: read plan
+    researcher->>Tool_search_notes: call
+    researcher->>Memory: write research
+    writer->>Memory: read research
+    writer-->>Failure: draft generation
+    writer->>Tool_summarize: call
+    writer->>Memory: write draft
+    planner->>Memory: write plan
+    researcher->>Memory: read plan
+    researcher->>Tool_search_notes: call
+    researcher->>Memory: write research
+    writer->>Memory: read research
+    writer-->>Failure: draft generation
+    writer->>Tool_summarize: call
+    writer->>Memory: write draft

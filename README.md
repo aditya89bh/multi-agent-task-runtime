@@ -228,3 +228,46 @@ python benchmarks/runtime_benchmark.py
 ```
 
 See `docs/operations.md` for replay, querying, drift analysis, dashboard, and benchmark workflows.
+
+## Screenshots and Generated Examples
+
+Generated text assets live in `assets/screenshots/`:
+
+- `live_dashboard.txt` — terminal dashboard output
+- `replay_timeline.txt` — replay timeline output from the demo
+- `benchmark_output.txt` — runtime benchmark output
+- `latest_report.html` — generated HTML observability report
+- `runtime_diagram.mmd` — Mermaid runtime sequence diagram
+
+## Example Commands
+
+```bash
+python examples/multi_agent_demo.py
+python dashboard/live_dashboard.py
+python benchmarks/runtime_benchmark.py
+python benchmarks/stress_benchmark.py --small
+runtime-search --jsonl logs/runtime_events.jsonl --event-type failure_occurred
+runtime-inspect --jsonl logs/runtime_events.jsonl
+```
+
+## Production-Readiness Status
+
+Approximate status: moving toward production readiness for local/runtime observability.
+
+This project does:
+
+- capture structured runtime events
+- persist and replay event logs
+- query JSONL and SQLite traces
+- generate analytics and reports
+- provide terminal inspection tools
+- support plugins and custom events
+- benchmark event throughput
+
+This project does not yet do:
+
+- distributed orchestration
+- hosted dashboards
+- authentication or multi-tenant access control
+- vendor-specific LLM tracing
+- managed telemetry ingestion
