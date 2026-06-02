@@ -44,9 +44,35 @@ class SQLiteEventStore:
 
     def retrieve_events(self) -> List[Event]:
         """Retrieve all stored events in insertion order."""
+        return self.get_events()
+
+    def get_events(
+        self,
+        event_type: Optional[str] = None,
+        agent_id: Optional[str] = None,
+        start_time: Optional[str] = None,
+        end_time: Optional[str] = None,
+    ) -> List[Event]:
+        """Query events by type, agent, and optional timestamp range."""
+        clauses = []
+        params = []
+        if event_type is not None:
+            clauses.append("event_type = ?")
+            params.append(event_type)
+        if agent_id is not None:
+            clauses.append("agent_id = ?")
+            params.append(agent_id)
+        if start_time is not None:
+            clauses.append("timestamp >= ?")
+            params.append(start_time)
+        if end_time is not None:
+            clauses.append("timestamp <= ?")
+            params.append(end_time)
+        where = f" WHERE {' AND '.join(clauses)}" if clauses else ""
         with self._connect() as conn:
             rows = conn.execute(
-                "SELECT event_type, timestamp, agent_id, payload FROM events ORDER BY id ASC"
+                f"SELECT event_type, timestamp, agent_id, payload FROM events{where} ORDER BY id ASC",
+                params,
             ).fetchall()
         return [self._row_to_event(row) for row in rows]
 
