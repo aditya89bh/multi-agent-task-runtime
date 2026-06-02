@@ -83,3 +83,7 @@ Thumbs.db
 
 # Runtime logs
 logs/
+
+# Benchmark outputs
+benchmarks/results/
+confidence_report.json

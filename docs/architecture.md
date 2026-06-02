@@ -215,3 +215,44 @@ Avoid:
 - premature framework abstractions
 - dashboard work before event semantics are stable
 - LLM integrations before runtime behavior is testable
+
+## Persistence and Replay Layer
+
+`runtime/sqlite_store.py` provides `SQLiteEventStore`, which persists all event fields and supports queries by event type, agent ID, and time range.
+
+`runtime/replay_engine.py` loads JSONL logs or SQLite logs, replays events sequentially, and reconstructs timelines.
+
+`visualization/replay_timeline.py` provides concise replay-oriented output such as:
+
+```text
+[10:00:01] Planner started
+[10:00:02] Memory read
+[10:00:03] Tool call
+[10:00:04] Confidence updated
+```
+
+## Analytics Layer
+
+The analytics layer now includes:
+
+- runtime metrics
+- agent performance metrics
+- memory metrics
+- tool metrics
+- confidence trend analysis
+- drift detection
+
+These modules consume event streams and produce summaries without changing runtime execution.
+
+## Operations and Tooling
+
+The repository includes:
+
+- terminal dashboard
+- runtime benchmark suite
+- operational debugging guide
+- CI workflow
+- coverage workflow
+- CodeQL workflow
+- dependency audit workflow
+- release workflow

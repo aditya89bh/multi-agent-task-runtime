@@ -77,3 +77,34 @@ The repository currently tests:
 - agent registry
 - drift detection
 - timeline rendering
+
+## Extended Validation
+
+Additional validation commands:
+
+```bash
+python benchmarks/runtime_benchmark.py
+python dashboard/live_dashboard.py
+```
+
+Expected generated artifacts:
+
+```text
+logs/runtime_events.jsonl
+benchmarks/results/latest_results.json
+```
+
+## Analytics Added
+
+The framework now includes collectors for:
+
+- runtime-wide event totals
+- per-agent performance
+- memory access frequency
+- tool usage and duration
+- confidence history and trend reports
+- drift detection signals
+
+## Replay and Storage
+
+Events can be persisted to SQLite, queried by event type, agent, or time range, and replayed into chronological timelines.

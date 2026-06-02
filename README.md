@@ -203,3 +203,28 @@ multi-agent-task-runtime/
 - Anthropic integration
 - Local model integration
 - Production deployment examples
+
+## Developer-Grade Observability Features
+
+The runtime now includes:
+
+- SQLite event storage via `SQLiteEventStore`
+- event query filters by type, agent, and time window
+- JSONL and SQLite replay through `ReplayEngine`
+- concise replay timelines through `ReplayTimelineRenderer`
+- runtime, agent, memory, tool, and confidence analytics
+- improved drift detection heuristics
+- terminal dashboard via `dashboard/live_dashboard.py`
+- benchmark suite via `benchmarks/runtime_benchmark.py`
+- GitHub Actions CI, coverage, CodeQL, dependency audit, and release workflows
+
+## Operational Commands
+
+```bash
+pytest
+python examples/multi_agent_demo.py
+python dashboard/live_dashboard.py
+python benchmarks/runtime_benchmark.py
+```
+
+See `docs/operations.md` for replay, querying, drift analysis, dashboard, and benchmark workflows.
