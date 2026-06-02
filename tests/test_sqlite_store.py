@@ -44,3 +44,36 @@ def test_sqlite_event_store_filters_by_type_agent_and_time_range(tmp_path):
         start_time="2026-01-01T10:00:01+00:00",
         end_time="2026-01-01T10:00:03+00:00",
     ) == [second]
+
+
+def test_sqlite_event_store_records_schema_version(tmp_path):
+    store = SQLiteEventStore(tmp_path / "events.db")
+
+    assert store.schema_version() == SQLiteEventStore.CURRENT_SCHEMA_VERSION
+
+
+def test_sqlite_event_store_migrates_legacy_database(tmp_path):
+    import sqlite3
+
+    db_path = tmp_path / "legacy.db"
+    with sqlite3.connect(db_path) as conn:
+        conn.execute(
+            """
+            CREATE TABLE events (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                event_type TEXT NOT NULL,
+                timestamp TEXT NOT NULL,
+                agent_id TEXT,
+                payload TEXT NOT NULL
+            )
+            """
+        )
+        conn.execute(
+            "INSERT INTO events (event_type, timestamp, agent_id, payload) VALUES (?, ?, ?, ?)",
+            (AGENT_STARTED, "2026-01-01T10:00:00+00:00", "planner", "{}"),
+        )
+
+    store = SQLiteEventStore(db_path)
+
+    assert store.schema_version() == SQLiteEventStore.CURRENT_SCHEMA_VERSION
+    assert store.retrieve_events()[0].schema_version == "1.0"

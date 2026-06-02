@@ -6,6 +6,7 @@ import json
 import sqlite3
 from collections.abc import Iterable
 from pathlib import Path
+from threading import RLock
 
 from events.event import Event
 
@@ -15,15 +16,18 @@ PathLike = str | Path
 class SQLiteEventStore:
     """Persist runtime events to SQLite."""
 
+    CURRENT_SCHEMA_VERSION = 1
+
     def __init__(self, db_path: PathLike) -> None:
         self.db_path = Path(db_path)
+        self._lock = RLock()
         if self.db_path.parent != Path("."):
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._initialize()
 
     def store_event(self, event: Event) -> None:
         """Store one event, preserving all event fields."""
-        with self._connect() as conn:
+        with self._lock, self._connect() as conn:
             conn.execute(
                 """
                 INSERT INTO events (event_type, timestamp, agent_id, payload, schema_version)
@@ -40,8 +44,23 @@ class SQLiteEventStore:
 
     def store_events(self, events: Iterable[Event]) -> None:
         """Store multiple events."""
-        for event in events:
-            self.store_event(event)
+        with self._lock, self._connect() as conn:
+            conn.executemany(
+                """
+                INSERT INTO events (event_type, timestamp, agent_id, payload, schema_version)
+                VALUES (?, ?, ?, ?, ?)
+                """,
+                [
+                    (
+                        event.event_type,
+                        event.timestamp,
+                        event.agent_id,
+                        json.dumps(event.payload, sort_keys=True),
+                        event.schema_version,
+                    )
+                    for event in events
+                ],
+            )
 
     def retrieve_events(self) -> list[Event]:
         """Retrieve all stored events in insertion order."""
@@ -70,15 +89,22 @@ class SQLiteEventStore:
             clauses.append("timestamp <= ?")
             params.append(end_time)
         where = f" WHERE {' AND '.join(clauses)}" if clauses else ""
-        with self._connect() as conn:
+        with self._lock, self._connect() as conn:
             rows = conn.execute(
                 f"SELECT event_type, timestamp, agent_id, payload, schema_version FROM events{where} ORDER BY id ASC",
                 params,
             ).fetchall()
         return [self._row_to_event(row) for row in rows]
 
+    def schema_version(self) -> int:
+        """Return the current database schema version recorded in SQLite."""
+        with self._lock, self._connect() as conn:
+            row = conn.execute("SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1").fetchone()
+        return int(row["version"]) if row else 0
+
     def _initialize(self) -> None:
-        with self._connect() as conn:
+        with self._lock, self._connect() as conn:
+            conn.execute("PRAGMA journal_mode=WAL")
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS events (
@@ -91,12 +117,28 @@ class SQLiteEventStore:
                 )
                 """
             )
-            columns = {row[1] for row in conn.execute("PRAGMA table_info(events)").fetchall()}
-            if "schema_version" not in columns:
-                conn.execute("ALTER TABLE events ADD COLUMN schema_version TEXT NOT NULL DEFAULT '1.0'")
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS schema_migrations (
+                    version INTEGER PRIMARY KEY,
+                    applied_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+                """
+            )
+            self._migrate(conn)
+
+    def _migrate(self, conn: sqlite3.Connection) -> None:
+        """Apply safe forward-only migrations."""
+        columns = {row[1] for row in conn.execute("PRAGMA table_info(events)").fetchall()}
+        if "schema_version" not in columns:
+            conn.execute("ALTER TABLE events ADD COLUMN schema_version TEXT NOT NULL DEFAULT '1.0'")
+        conn.execute(
+            "INSERT OR IGNORE INTO schema_migrations (version) VALUES (?)",
+            (self.CURRENT_SCHEMA_VERSION,),
+        )
 
     def _connect(self) -> sqlite3.Connection:
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3.connect(self.db_path, check_same_thread=False)
         conn.row_factory = sqlite3.Row
         return conn
 
