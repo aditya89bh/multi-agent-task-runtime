@@ -1,0 +1,13 @@
+"""Canonical event type names emitted by the runtime."""
+
+AGENT_STARTED = "agent_started"
+AGENT_FINISHED = "agent_finished"
+MEMORY_READ = "memory_read"
+MEMORY_WRITE = "memory_write"
+TOOL_CALLED = "tool_called"
+TOOL_RETURNED = "tool_returned"
+CONFIDENCE_UPDATED = "confidence_updated"
+FAILURE_OCCURRED = "failure_occurred"
+RETRY_STARTED = "retry_started"
+RETRY_COMPLETED = "retry_completed"
+DRIFT_DETECTED = "drift_detected"
