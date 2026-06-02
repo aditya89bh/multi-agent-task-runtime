@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Iterable, List, Optional
+from collections.abc import Iterable
 
 from events.event import Event
 from events.filters import filter_events
@@ -14,14 +14,14 @@ class TimelineRenderer:
     def render(
         self,
         events: Iterable[Event],
-        event_type: Optional[str] = None,
-        agent_id: Optional[str] = None,
-        start_time: Optional[str] = None,
-        end_time: Optional[str] = None,
+        event_type: str | None = None,
+        agent_id: str | None = None,
+        start_time: str | None = None,
+        end_time: str | None = None,
     ) -> str:
         """Render events sorted by timestamp, with optional filters."""
         selected = filter_events(events, event_type, agent_id, start_time, end_time)
-        lines: List[str] = []
+        lines: list[str] = []
         for event in sorted(selected, key=lambda item: item.timestamp):
             agent = event.agent_id or "system"
             payload = self._format_payload(event.payload)

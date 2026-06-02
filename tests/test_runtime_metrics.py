@@ -1,6 +1,6 @@
 from analytics.runtime_metrics import RuntimeMetricsCollector
-from events.event import Event
 from events import event_types
+from events.event import Event
 
 
 def test_runtime_metrics_collector_summarizes_counts():

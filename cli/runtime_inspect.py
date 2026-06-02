@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-from typing import List
 
 from analytics.agent_metrics import AgentMetricsCollector
 from analytics.confidence_analysis import ConfidenceAnalyzer
@@ -17,7 +16,7 @@ from runtime.replay_engine import ReplayEngine
 from runtime.sqlite_store import SQLiteEventStore
 
 
-def inspect_events(events: List[Event]) -> dict:
+def inspect_events(events: list[Event]) -> dict:
     tool_summary = ToolMetricsCollector().summarize(events)
     memory_summary = MemoryMetricsCollector().summarize(events)
     return {

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Callable, List
+from collections.abc import Callable
 
 from events.event import Event
 
@@ -13,7 +13,7 @@ class EventBus:
     """A minimal in-process event bus for runtime observability."""
 
     def __init__(self) -> None:
-        self._subscribers: List[Subscriber] = []
+        self._subscribers: list[Subscriber] = []
 
     def subscribe(self, subscriber: Subscriber) -> None:
         """Register a subscriber callback."""

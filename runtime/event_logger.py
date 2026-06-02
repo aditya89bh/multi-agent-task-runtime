@@ -4,12 +4,11 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Union
 
 from events.event import Event
 from runtime.event_bus import EventBus
 
-PathLike = Union[str, Path]
+PathLike = str | Path
 
 
 class EventLogger:

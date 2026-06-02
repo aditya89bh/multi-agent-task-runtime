@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Dict, Iterable
+from collections.abc import Iterable
 
 from events import event_types
 from events.event import Event
@@ -11,7 +11,7 @@ from events.event import Event
 class RuntimeMetricsCollector:
     """Summarize high-level runtime event counts."""
 
-    def summarize(self, events: Iterable[Event]) -> Dict[str, int]:
+    def summarize(self, events: Iterable[Event]) -> dict[str, int]:
         event_list = list(events)
         return {
             "total_events": len(event_list),

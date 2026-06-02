@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from datetime import datetime
-from typing import Iterable, List, Optional
 
+from events import event_types
 from events.event import Event
 from events.filters import filter_events
-from events import event_types
 
 _LABELS = {
     event_types.AGENT_STARTED: "{agent} started",
@@ -30,13 +30,13 @@ class ReplayTimelineRenderer:
     def render(
         self,
         events: Iterable[Event],
-        event_type: Optional[str] = None,
-        agent_id: Optional[str] = None,
-        start_time: Optional[str] = None,
-        end_time: Optional[str] = None,
+        event_type: str | None = None,
+        agent_id: str | None = None,
+        start_time: str | None = None,
+        end_time: str | None = None,
     ) -> str:
         selected = filter_events(events, event_type, agent_id, start_time, end_time)
-        lines: List[str] = []
+        lines: list[str] = []
         for event in sorted(selected, key=lambda item: item.timestamp):
             lines.append(f"[{self._time(event.timestamp)}] {self._label(event)}")
         return "\n".join(lines)

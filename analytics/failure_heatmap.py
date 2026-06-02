@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from collections import Counter
-from typing import Any, Dict, Iterable
+from collections.abc import Iterable
+from typing import Any
 
 from events.event import Event
 from events.event_types import FAILURE_OCCURRED
@@ -12,7 +13,7 @@ from events.event_types import FAILURE_OCCURRED
 class FailureHeatmap:
     """Summarize failure density by agent, tool, event type, and reason."""
 
-    def summarize(self, events: Iterable[Event]) -> Dict[str, Any]:
+    def summarize(self, events: Iterable[Event]) -> dict[str, Any]:
         by_agent: Counter[str] = Counter()
         by_tool: Counter[str] = Counter()
         by_event_type: Counter[str] = Counter()

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from events.event import Event
 from events.event_types import MEMORY_READ, MEMORY_WRITE
@@ -14,9 +14,9 @@ class MemoryStore:
 
     def __init__(self, event_bus: EventBus) -> None:
         self.event_bus = event_bus
-        self._memory: Dict[str, Any] = {}
+        self._memory: dict[str, Any] = {}
 
-    def write(self, key: str, value: Any, agent_id: Optional[str] = None) -> Any:
+    def write(self, key: str, value: Any, agent_id: str | None = None) -> Any:
         """Write a value and emit MEMORY_WRITE."""
         self._memory[key] = value
         self.event_bus.publish(
@@ -28,7 +28,7 @@ class MemoryStore:
         )
         return value
 
-    def read(self, key: str, agent_id: Optional[str] = None, default: Any = None) -> Any:
+    def read(self, key: str, agent_id: str | None = None, default: Any = None) -> Any:
         """Read a value and emit MEMORY_READ."""
         value = self._memory.get(key, default)
         self.event_bus.publish(

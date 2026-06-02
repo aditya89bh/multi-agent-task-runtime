@@ -3,16 +3,16 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from agents.base_agent import BaseAgent
 from analytics.confidence_tracker import ConfidenceTracker
-from events.event import Event
 from analytics.drift_detector import DriftDetector
 from analytics.failure_analyzer import FailureAnalyzer
+from events.event import Event
 from memory.memory_store import MemoryStore
 from runtime.coordinator import RuntimeCoordinator
 from runtime.event_bus import EventBus

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import List
-
 from events.event import Event
 from runtime.event_bus import EventBus
 
@@ -22,7 +20,7 @@ class PluginManager:
 
     def __init__(self, event_bus: EventBus) -> None:
         self.event_bus = event_bus
-        self._plugins: List[BasePlugin] = []
+        self._plugins: list[BasePlugin] = []
         self.event_bus.subscribe(self._handle_event)
 
     def register_plugin(self, plugin: BasePlugin) -> None:
@@ -33,7 +31,7 @@ class PluginManager:
         if plugin in self._plugins:
             self._plugins.remove(plugin)
 
-    def plugins(self) -> List[BasePlugin]:
+    def plugins(self) -> list[BasePlugin]:
         return list(self._plugins)
 
     def close(self) -> None:

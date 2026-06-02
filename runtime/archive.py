@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import gzip
 import json
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable, List, Union
 
 from events.event import Event
 
-PathLike = Union[str, Path]
+PathLike = str | Path
 
 
 def compress_jsonl(source_path: PathLike, archive_path: PathLike | None = None) -> Path:
@@ -30,6 +30,6 @@ def write_jsonl_gz(events: Iterable[Event], archive_path: PathLike) -> Path:
     return target
 
 
-def read_jsonl_gz(archive_path: PathLike) -> List[Event]:
+def read_jsonl_gz(archive_path: PathLike) -> list[Event]:
     with gzip.open(archive_path, "rt", encoding="utf-8") as file:
         return [Event(**json.loads(line)) for line in file if line.strip()]

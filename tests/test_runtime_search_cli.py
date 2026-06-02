@@ -21,6 +21,11 @@ def test_runtime_search_cli_reads_jsonl(tmp_path):
     event = Event(event_type=FAILURE_OCCURRED, agent_id="writer", payload={"reason": "timeout"})
     path.write_text(json.dumps(event.to_dict()) + "\n", encoding="utf-8")
 
-    result = subprocess.run([sys.executable, "-m", "cli.runtime_search", "--jsonl", str(path), "--keyword", "timeout"], capture_output=True, text=True, check=True)
+    result = subprocess.run(
+        [sys.executable, "-m", "cli.runtime_search", "--jsonl", str(path), "--keyword", "timeout"],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
 
     assert "failure_occurred" in result.stdout

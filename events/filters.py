@@ -2,20 +2,20 @@
 
 from __future__ import annotations
 
-from typing import Iterable, List, Optional
+from collections.abc import Iterable
 
 from events.event import Event
 
 
 def filter_events(
     events: Iterable[Event],
-    event_type: Optional[str] = None,
-    agent_id: Optional[str] = None,
-    start_time: Optional[str] = None,
-    end_time: Optional[str] = None,
-) -> List[Event]:
+    event_type: str | None = None,
+    agent_id: str | None = None,
+    start_time: str | None = None,
+    end_time: str | None = None,
+) -> list[Event]:
     """Filter events by type, agent, and timestamp window."""
-    filtered: List[Event] = []
+    filtered: list[Event] = []
     for event in events:
         if event_type is not None and event.event_type != event_type:
             continue

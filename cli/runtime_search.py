@@ -4,15 +4,16 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
-from typing import Iterable, List
+from collections.abc import Iterable
 
 from events.event import Event
 from runtime.replay_engine import ReplayEngine
 from runtime.sqlite_store import SQLiteEventStore
 
 
-def search_events(events: Iterable[Event], event_type: str | None = None, agent_id: str | None = None, keyword: str | None = None) -> List[Event]:
+def search_events(
+    events: Iterable[Event], event_type: str | None = None, agent_id: str | None = None, keyword: str | None = None
+) -> list[Event]:
     results = []
     for event in events:
         if event_type and event.event_type != event_type:
@@ -25,7 +26,7 @@ def search_events(events: Iterable[Event], event_type: str | None = None, agent_
     return results
 
 
-def load_events(args: argparse.Namespace) -> List[Event]:
+def load_events(args: argparse.Namespace) -> list[Event]:
     if args.sqlite:
         return SQLiteEventStore(args.sqlite).get_events()
     return ReplayEngine().load_jsonl(args.jsonl)

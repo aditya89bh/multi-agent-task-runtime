@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Any, DefaultDict, Dict, Iterable, List
+from collections.abc import Iterable
+from typing import Any
 
 from events import event_types
 from events.event import Event
@@ -12,8 +13,8 @@ from events.event import Event
 class AgentMetricsCollector:
     """Compute per-agent task, failure, retry, and confidence metrics."""
 
-    def summarize(self, events: Iterable[Event]) -> Dict[str, Dict[str, Any]]:
-        metrics: DefaultDict[str, Dict[str, Any]] = defaultdict(
+    def summarize(self, events: Iterable[Event]) -> dict[str, dict[str, Any]]:
+        metrics: defaultdict[str, dict[str, Any]] = defaultdict(
             lambda: {
                 "tasks_completed": 0,
                 "failures": 0,
@@ -22,8 +23,8 @@ class AgentMetricsCollector:
                 "success_rate": 0.0,
             }
         )
-        confidence: DefaultDict[str, List[float]] = defaultdict(list)
-        starts: DefaultDict[str, int] = defaultdict(int)
+        confidence: defaultdict[str, list[float]] = defaultdict(list)
+        starts: defaultdict[str, int] = defaultdict(int)
         for event in events:
             if event.agent_id is None:
                 continue

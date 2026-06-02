@@ -36,3 +36,16 @@ ignore_missing_imports = true
 check_untyped_defs = true
 no_implicit_optional = true
 exclude = ["tests/", "build/", "dist/"]
+
+[tool.ruff]
+line-length = 140
+target-version = "py310"
+exclude = ["build", "dist"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

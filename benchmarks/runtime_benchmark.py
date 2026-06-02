@@ -4,10 +4,9 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 import sys
+from pathlib import Path
 from time import perf_counter
-from typing import Any, Dict
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -25,7 +24,7 @@ class BenchmarkAgent(BaseAgent):
         return {"events": context.get("events_per_agent", 0)}
 
 
-def run_benchmark(agent_count: int = 10, events_per_agent: int = 100) -> Dict[str, object]:
+def run_benchmark(agent_count: int = 10, events_per_agent: int = 100) -> dict[str, object]:
     bus = EventBus()
     events: list[Event] = []
     bus.subscribe(events.append)
@@ -41,7 +40,7 @@ def run_benchmark(agent_count: int = 10, events_per_agent: int = 100) -> Dict[st
         bus.publish(Event(event_type=AGENT_FINISHED, agent_id=agent_id))
     duration = perf_counter() - start
     summary = RuntimeMetricsCollector().summarize(events)
-    result: Dict[str, object] = {
+    result: dict[str, object] = {
         "agent_count": agent_count,
         "events_per_agent": events_per_agent,
         "total_events": len(events),
@@ -52,7 +51,7 @@ def run_benchmark(agent_count: int = 10, events_per_agent: int = 100) -> Dict[st
     return result
 
 
-def write_results(result: Dict[str, object], output_path: Path = RESULTS_PATH) -> None:
+def write_results(result: dict[str, object], output_path: Path = RESULTS_PATH) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
 

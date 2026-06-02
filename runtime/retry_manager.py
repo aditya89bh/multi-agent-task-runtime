@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from time import sleep
-from typing import Callable, Optional, TypeVar
+from typing import TypeVar
 
 from events.event import Event
 from events.event_types import RETRY_COMPLETED, RETRY_STARTED
@@ -29,7 +30,7 @@ class RetryManager:
         self.base_delay_seconds = base_delay_seconds
         self.exponential_backoff = exponential_backoff
 
-    def run(self, operation: Callable[[], T], agent_id: Optional[str] = None, operation_name: str = "operation") -> T:
+    def run(self, operation: Callable[[], T], agent_id: str | None = None, operation_name: str = "operation") -> T:
         """Run an operation until it succeeds or retries are exhausted."""
         attempt = 0
         while True:

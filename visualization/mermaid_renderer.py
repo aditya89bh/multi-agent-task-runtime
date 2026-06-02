@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable, Union
 
 from events.event import Event
 from events.event_types import FAILURE_OCCURRED, MEMORY_READ, MEMORY_WRITE, TOOL_CALLED
 
-PathLike = Union[str, Path]
+PathLike = str | Path
 
 
 class MermaidRenderer:

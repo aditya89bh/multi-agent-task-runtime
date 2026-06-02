@@ -3,17 +3,12 @@
 from __future__ import annotations
 
 import re
-from typing import Set
 
 from events import event_types
 
 _EVENT_NAME_RE = re.compile(r"^[a-z][a-z0-9_]*$")
-_BUILT_INS = {
-    value
-    for name, value in vars(event_types).items()
-    if name.isupper() and isinstance(value, str)
-}
-_CUSTOM: Set[str] = set()
+_BUILT_INS = {value for name, value in vars(event_types).items() if name.isupper() and isinstance(value, str)}
+_CUSTOM: set[str] = set()
 
 
 def validate_event_name(name: str) -> str:
@@ -36,5 +31,5 @@ def is_registered_event_type(name: str) -> bool:
     return name in _BUILT_INS or name in _CUSTOM
 
 
-def registered_event_types() -> Set[str]:
+def registered_event_types() -> set[str]:
     return set(_BUILT_INS) | set(_CUSTOM)

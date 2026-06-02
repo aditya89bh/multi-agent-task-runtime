@@ -21,9 +21,7 @@ class BaseAgent:
     def start(self, **context: Any) -> None:
         """Mark the agent as started and emit AGENT_STARTED."""
         self.started = True
-        self.event_bus.publish(
-            Event(event_type=AGENT_STARTED, agent_id=self.agent_id, payload={"context": context})
-        )
+        self.event_bus.publish(Event(event_type=AGENT_STARTED, agent_id=self.agent_id, payload={"context": context}))
 
     def run(self, **context: Any) -> Any:
         """Execute agent behavior.
@@ -36,6 +34,4 @@ class BaseAgent:
     def finish(self, result: Any = None) -> None:
         """Mark the agent as finished and emit AGENT_FINISHED."""
         self.finished = True
-        self.event_bus.publish(
-            Event(event_type=AGENT_FINISHED, agent_id=self.agent_id, payload={"result": result})
-        )
+        self.event_bus.publish(Event(event_type=AGENT_FINISHED, agent_id=self.agent_id, payload={"result": result}))

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Dict, Iterable
+from collections.abc import Iterable
 
 from analytics.runtime_metrics import RuntimeMetricsCollector
 from events.event import Event
@@ -12,7 +12,7 @@ from events.event_types import CONFIDENCE_UPDATED
 class RunComparison:
     """Compare summary statistics between two runs."""
 
-    def compare(self, baseline: Iterable[Event], candidate: Iterable[Event]) -> Dict[str, Dict[str, float]]:
+    def compare(self, baseline: Iterable[Event], candidate: Iterable[Event]) -> dict[str, dict[str, float]]:
         left = list(baseline)
         right = list(candidate)
         left_summary = self._summary(left)
@@ -22,7 +22,7 @@ class RunComparison:
             for key in left_summary
         }
 
-    def _summary(self, events: list[Event]) -> Dict[str, float]:
+    def _summary(self, events: list[Event]) -> dict[str, float]:
         metrics = RuntimeMetricsCollector().summarize(events)
         confidence = [float(event.payload["confidence"]) for event in events if event.event_type == CONFIDENCE_UPDATED]
         return {

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import DefaultDict, Dict, List, Optional
 
 from events.event import Event
 from events.event_types import CONFIDENCE_UPDATED
@@ -15,9 +14,9 @@ class ConfidenceTracker:
 
     def __init__(self, event_bus: EventBus) -> None:
         self.event_bus = event_bus
-        self._history: DefaultDict[str, List[float]] = defaultdict(list)
+        self._history: defaultdict[str, list[float]] = defaultdict(list)
 
-    def update_confidence(self, agent_id: str, confidence: float, reason: Optional[str] = None) -> None:
+    def update_confidence(self, agent_id: str, confidence: float, reason: str | None = None) -> None:
         """Record a confidence value and emit CONFIDENCE_UPDATED."""
         if not 0 <= confidence <= 1:
             raise ValueError("confidence must be between 0 and 1")
@@ -30,10 +29,10 @@ class ConfidenceTracker:
             )
         )
 
-    def history_for(self, agent_id: str) -> List[float]:
+    def history_for(self, agent_id: str) -> list[float]:
         """Return confidence history for one agent."""
         return list(self._history.get(agent_id, []))
 
-    def all_history(self) -> Dict[str, List[float]]:
+    def all_history(self) -> dict[str, list[float]]:
         """Return all confidence histories."""
         return {agent_id: list(values) for agent_id, values in self._history.items()}

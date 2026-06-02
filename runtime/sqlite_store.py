@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable, List, Optional, Union
 
 from events.event import Event
 
-PathLike = Union[str, Path]
+PathLike = str | Path
 
 
 class SQLiteEventStore:
@@ -43,17 +43,17 @@ class SQLiteEventStore:
         for event in events:
             self.store_event(event)
 
-    def retrieve_events(self) -> List[Event]:
+    def retrieve_events(self) -> list[Event]:
         """Retrieve all stored events in insertion order."""
         return self.get_events()
 
     def get_events(
         self,
-        event_type: Optional[str] = None,
-        agent_id: Optional[str] = None,
-        start_time: Optional[str] = None,
-        end_time: Optional[str] = None,
-    ) -> List[Event]:
+        event_type: str | None = None,
+        agent_id: str | None = None,
+        start_time: str | None = None,
+        end_time: str | None = None,
+    ) -> list[Event]:
         """Query events by type, agent, and optional timestamp range."""
         clauses = []
         params = []

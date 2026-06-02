@@ -5,8 +5,8 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
 import sys
+from pathlib import Path
 from time import perf_counter
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from analytics.runtime_metrics import RuntimeMetricsCollector
 from events.event import Event
 from events.event_types import CONFIDENCE_UPDATED, FAILURE_OCCURRED, MEMORY_READ, MEMORY_WRITE, TOOL_CALLED, TOOL_RETURNED
-from runtime.archive import write_jsonl_gz, read_jsonl_gz
+from runtime.archive import read_jsonl_gz, write_jsonl_gz
 from runtime.sqlite_store import SQLiteEventStore
 
 RESULTS_PATH = Path("benchmarks/results/stress_results.json")

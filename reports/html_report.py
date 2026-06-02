@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import html
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable, Union
 
 from analytics.agent_metrics import AgentMetricsCollector
 from analytics.confidence_analysis import ConfidenceAnalyzer
@@ -13,7 +13,7 @@ from analytics.runtime_metrics import RuntimeMetricsCollector
 from analytics.tool_metrics import ToolMetricsCollector
 from events.event import Event
 
-PathLike = Union[str, Path]
+PathLike = str | Path
 
 
 class HTMLReportGenerator:

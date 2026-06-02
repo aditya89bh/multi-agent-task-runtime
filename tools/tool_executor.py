@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from time import perf_counter
-from typing import Any, Callable, Dict, Optional
+from typing import Any
 
 from events.event import Event
 from events.event_types import TOOL_CALLED, TOOL_RETURNED
@@ -17,13 +18,13 @@ class ToolExecutor:
 
     def __init__(self, event_bus: EventBus) -> None:
         self.event_bus = event_bus
-        self._tools: Dict[str, Tool] = {}
+        self._tools: dict[str, Tool] = {}
 
     def register_tool(self, name: str, tool: Tool) -> None:
         """Register a callable tool by name."""
         self._tools[name] = tool
 
-    def execute(self, name: str, *args: Any, agent_id: Optional[str] = None, **kwargs: Any) -> Any:
+    def execute(self, name: str, *args: Any, agent_id: str | None = None, **kwargs: Any) -> Any:
         """Execute a registered tool and emit call/return events."""
         if name not in self._tools:
             raise KeyError(f"Tool is not registered: {name}")

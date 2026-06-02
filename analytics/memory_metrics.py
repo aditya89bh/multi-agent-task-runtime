@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from collections import Counter
-from typing import Any, Dict, Iterable
+from collections.abc import Iterable
+from typing import Any
 
 from events import event_types
 from events.event import Event
@@ -12,7 +13,7 @@ from events.event import Event
 class MemoryMetricsCollector:
     """Summarize memory reads, writes, and key access frequency."""
 
-    def summarize(self, events: Iterable[Event]) -> Dict[str, Any]:
+    def summarize(self, events: Iterable[Event]) -> dict[str, Any]:
         read_count = 0
         write_count = 0
         key_accesses: Counter[str] = Counter()
