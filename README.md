@@ -1,5 +1,11 @@
 # Multi-Agent Task Runtime
 
+[![Version](https://img.shields.io/badge/version-v0.1.0-blue)](https://github.com/aditya89bh/multi-agent-task-runtime/releases/tag/v0.1.0)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
+[![Tests](https://img.shields.io/badge/tests-82%20passing-brightgreen)](#quality)
+[![Coverage](https://img.shields.io/badge/coverage-95.61%25-brightgreen)](#quality)
+
+
 Understand what your agents are actually doing.
 
 ## Project Overview
@@ -15,6 +21,44 @@ Multi-Agent Task Runtime is an observability-first execution framework for agent
 - Planning decisions
 - Behavioral drift
 - Runtime metrics
+
+
+## Installation
+
+Clone the repository and install it locally:
+
+```bash
+git clone https://github.com/aditya89bh/multi-agent-task-runtime.git
+cd multi-agent-task-runtime
+python -m pip install -e .
+```
+
+For development checks:
+
+```bash
+python -m pip install pytest pytest-cov mypy ruff build
+```
+
+## Quick Start
+
+Run the observable multi-agent demo:
+
+```bash
+python examples/multi_agent_demo.py
+```
+
+Inspect the generated event log:
+
+```bash
+runtime-inspect --jsonl logs/runtime_events.jsonl
+runtime-search --jsonl logs/runtime_events.jsonl --event-type failure_occurred
+```
+
+Generate benchmark output:
+
+```bash
+python benchmarks/runtime_benchmark.py
+```
 
 ## Motivation
 
@@ -229,6 +273,16 @@ python benchmarks/runtime_benchmark.py
 
 See `docs/operations.md` for replay, querying, drift analysis, dashboard, and benchmark workflows.
 
+## Dashboard Screenshot
+
+Terminal dashboard sample output is stored at [`assets/screenshots/live_dashboard.txt`](assets/screenshots/live_dashboard.txt).
+
+```text
+Runtime Observability Dashboard
+================================
+... event totals, failures, confidence, memory, and tool metrics ...
+```
+
 ## Screenshots and Generated Examples
 
 Generated text assets live in `assets/screenshots/`:
@@ -249,6 +303,16 @@ python benchmarks/stress_benchmark.py --small
 runtime-search --jsonl logs/runtime_events.jsonl --event-type failure_occurred
 runtime-inspect --jsonl logs/runtime_events.jsonl
 ```
+
+## Quality
+
+- 82 automated tests
+- 95.61% test coverage
+- `mypy .` validation
+- `ruff check .` and `ruff format --check .` validation
+- Package build validation with `python -m build`
+- Docker packaging
+- Security hardening notes in `docs/security.md`
 
 ## Production-Readiness Status
 
