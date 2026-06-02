@@ -271,3 +271,23 @@ This project does not yet do:
 - authentication or multi-tenant access control
 - vendor-specific LLM tracing
 - managed telemetry ingestion
+
+## Docker
+
+Build the image:
+
+```bash
+docker build -t multi-agent-task-runtime .
+```
+
+Run the demo:
+
+```bash
+docker run --rm multi-agent-task-runtime
+```
+
+Run tests inside the image:
+
+```bash
+docker run --rm multi-agent-task-runtime pytest
+```

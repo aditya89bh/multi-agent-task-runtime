@@ -1,0 +1,15 @@
+.git
+.github
+.pytest_cache
+.mypy_cache
+.ruff_cache
+__pycache__
+*.pyc
+build
+dist
+*.egg-info
+logs
+benchmarks/results
+reports/latest_report.html
+reports/runtime_diagram.mmd
+confidence_report.json
