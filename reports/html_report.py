@@ -12,6 +12,7 @@ from analytics.memory_metrics import MemoryMetricsCollector
 from analytics.runtime_metrics import RuntimeMetricsCollector
 from analytics.tool_metrics import ToolMetricsCollector
 from events.event import Event
+from runtime.paths import ensure_output_file
 
 PathLike = str | Path
 
@@ -31,7 +32,6 @@ class HTMLReportGenerator:
         }
         body = "\n".join(f"<h2>{html.escape(title)}</h2><pre>{html.escape(str(data))}</pre>" for title, data in sections.items())
         document = f"<!doctype html><html><head><title>Runtime Observability Report</title></head><body><h1>Runtime Observability Report</h1>{body}</body></html>"
-        path = Path(output_path)
-        path.parent.mkdir(parents=True, exist_ok=True)
+        path = ensure_output_file(output_path, "HTML report")
         path.write_text(document, encoding="utf-8")
         return path

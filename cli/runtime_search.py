@@ -7,6 +7,7 @@ import json
 from collections.abc import Iterable
 
 from events.event import Event
+from runtime.paths import ensure_input_file
 from runtime.replay_engine import ReplayEngine
 from runtime.sqlite_store import SQLiteEventStore
 
@@ -28,8 +29,8 @@ def search_events(
 
 def load_events(args: argparse.Namespace) -> list[Event]:
     if args.sqlite:
-        return SQLiteEventStore(args.sqlite).get_events()
-    return ReplayEngine().load_jsonl(args.jsonl)
+        return SQLiteEventStore(ensure_input_file(args.sqlite, "SQLite database")).get_events()
+    return ReplayEngine().load_jsonl(ensure_input_file(args.jsonl, "JSONL log"))
 
 
 def build_parser() -> argparse.ArgumentParser:

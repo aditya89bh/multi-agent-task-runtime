@@ -12,6 +12,7 @@ from analytics.runtime_metrics import RuntimeMetricsCollector
 from analytics.tool_metrics import ToolMetricsCollector
 from events.event import Event
 from events.event_types import FAILURE_OCCURRED
+from runtime.paths import ensure_input_file
 from runtime.replay_engine import ReplayEngine
 from runtime.sqlite_store import SQLiteEventStore
 
@@ -39,7 +40,11 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    events = SQLiteEventStore(args.sqlite).get_events() if args.sqlite else ReplayEngine().load_jsonl(args.jsonl)
+    events = (
+        SQLiteEventStore(ensure_input_file(args.sqlite, "SQLite database")).get_events()
+        if args.sqlite
+        else ReplayEngine().load_jsonl(ensure_input_file(args.jsonl, "JSONL log"))
+    )
     print(json.dumps(inspect_events(events), indent=2, sort_keys=True))
     return 0
 
