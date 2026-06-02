@@ -8,6 +8,10 @@ version = "0.1.0"
 description = "A runtime and observability framework for multi-agent systems."
 requires-python = ">=3.10"
 
+[project.scripts]
+runtime-search = "cli.runtime_search:main"
+runtime-inspect = "cli.runtime_inspect:main"
+
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
