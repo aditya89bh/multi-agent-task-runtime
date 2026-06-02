@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 import sys
 from time import perf_counter
-from typing import Dict
+from typing import Any, Dict
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -27,7 +27,7 @@ class BenchmarkAgent(BaseAgent):
 
 def run_benchmark(agent_count: int = 10, events_per_agent: int = 100) -> Dict[str, object]:
     bus = EventBus()
-    events = []
+    events: list[Event] = []
     bus.subscribe(events.append)
     start = perf_counter()
     for index in range(agent_count):
@@ -41,7 +41,7 @@ def run_benchmark(agent_count: int = 10, events_per_agent: int = 100) -> Dict[st
         bus.publish(Event(event_type=AGENT_FINISHED, agent_id=agent_id))
     duration = perf_counter() - start
     summary = RuntimeMetricsCollector().summarize(events)
-    result = {
+    result: Dict[str, object] = {
         "agent_count": agent_count,
         "events_per_agent": events_per_agent,
         "total_events": len(events),

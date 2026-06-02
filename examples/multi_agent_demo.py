@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from agents.base_agent import BaseAgent
 from analytics.confidence_tracker import ConfidenceTracker
+from events.event import Event
 from analytics.drift_detector import DriftDetector
 from analytics.failure_analyzer import FailureAnalyzer
 from memory.memory_store import MemoryStore
@@ -79,7 +80,7 @@ class WriterAgent(BaseAgent):
 
 
 def main() -> None:
-    events = []
+    events: list[Event] = []
     bus = EventBus()
     bus.subscribe(events.append)
     logger = EventLogger(bus)
