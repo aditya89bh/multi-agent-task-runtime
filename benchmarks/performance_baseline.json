@@ -1,0 +1,16 @@
+{
+  "runtime_benchmark": {
+    "events_per_second": 1000.0,
+    "regression_threshold": 0.5
+  },
+  "stress_benchmark_small": {
+    "write_throughput_events_per_second": 500.0,
+    "read_throughput_events_per_second": 500.0,
+    "regression_threshold": 0.5
+  },
+  "load_test_small": {
+    "write_throughput_events_per_second": 500.0,
+    "read_throughput_events_per_second": 500.0,
+    "regression_threshold": 0.5
+  }
+}
