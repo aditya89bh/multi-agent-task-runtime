@@ -1,6 +1,7 @@
 """Runtime analytics primitives."""
 
 from .agent_metrics import AgentMetricsCollector
+from .confidence_analysis import ConfidenceAnalyzer
 from .confidence_tracker import ConfidenceTracker
 from .drift_detector import DriftDetector
 from .failure_analyzer import FailureAnalyzer
@@ -10,6 +11,7 @@ from .tool_metrics import ToolMetricsCollector
 
 __all__ = [
     "AgentMetricsCollector",
+    "ConfidenceAnalyzer",
     "ConfidenceTracker",
     "DriftDetector",
     "FailureAnalyzer",
