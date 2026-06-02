@@ -256,3 +256,85 @@ The repository includes:
 - CodeQL workflow
 - dependency audit workflow
 - release workflow
+
+## Event Lifecycle
+
+1. Runtime component creates an `Event` with `event_type`, `agent_id`, `payload`, `timestamp`, and `schema_version`.
+2. `EventBus.publish()` sends the event to subscribers.
+3. Subscribers may include loggers, plugins, dashboards, metrics collectors, or custom application hooks.
+4. Events can be persisted to JSONL, compressed JSONL archives, or SQLite.
+5. Replay and analytics tools consume persisted events without re-running agents.
+
+## Storage Backends
+
+- JSONL: append-only developer-friendly logs.
+- `.jsonl.gz`: compressed event archives for long-running traces.
+- SQLite: queryable local event database with filters for event type, agent ID, and time windows.
+
+## Replay Architecture
+
+`ReplayEngine` loads JSONL or SQLite logs and yields chronological events. Replay output can feed:
+
+- `TimelineRenderer`
+- `ReplayTimelineRenderer`
+- analytics collectors
+- dashboards
+- HTML reports
+- Mermaid diagrams
+
+## Analytics Architecture
+
+Analytics modules are read-only consumers of event streams. They do not modify runtime behavior.
+
+Available analytics include:
+
+- runtime metrics
+- agent metrics
+- memory metrics
+- tool metrics
+- confidence trends
+- drift detection
+- failure heatmaps
+- dependency graphs
+- comparative run analysis
+
+## CLI Workflows
+
+Search events:
+
+```bash
+runtime-search --jsonl logs/runtime_events.jsonl --event-type failure_occurred
+runtime-search --sqlite runtime.db --agent-id planner
+```
+
+Inspect runs:
+
+```bash
+runtime-inspect --jsonl logs/runtime_events.jsonl
+runtime-inspect --sqlite runtime.db
+```
+
+## Production Readiness Notes
+
+The project is moving toward production readiness while remaining intentionally lightweight.
+
+Current strengths:
+
+- event schema versioning
+- queryable SQLite backend
+- compressed archives
+- replay engine
+- plugin hooks
+- CLI inspection/search
+- CI, coverage, CodeQL, dependency audit, release workflow
+- stress benchmarks
+
+Still intentionally out of scope:
+
+- LLM vendor integrations
+- hosted observability service
+- distributed tracing backend ownership
+- remote agent orchestration
+- authentication/authorization
+
+The recommended production path is to keep this runtime as the local instrumentation layer and export events to external telemetry systems when needed.
