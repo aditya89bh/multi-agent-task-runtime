@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from threading import RLock
 
 from events.event import Event
 from runtime.event_bus import EventBus
@@ -18,12 +19,14 @@ class EventLogger:
         self.event_bus = event_bus
         self.output_path = Path(output_path)
         self.output_path.parent.mkdir(parents=True, exist_ok=True)
+        self._lock = RLock()
         self.event_bus.subscribe(self.handle_event)
 
     def handle_event(self, event: Event) -> None:
         """Persist one event as a JSON line."""
-        with self.output_path.open("a", encoding="utf-8") as file:
-            file.write(json.dumps(event.to_dict(), sort_keys=True) + "\n")
+        line = json.dumps(event.to_dict(), sort_keys=True) + "\n"
+        with self._lock, self.output_path.open("a", encoding="utf-8") as file:
+            file.write(line)
 
     def close(self) -> None:
         """Unsubscribe this logger from the event bus."""
